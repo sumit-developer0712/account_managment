@@ -18,119 +18,121 @@ consumes:
 produces:
   - application/json
 paths:
-  /hello:
+
+  /displayIndividuals:
     # binds a127 app logic to a route
-    x-swagger-router-controller: hello_world
+    x-swagger-router-controller: account
     get:
-      description: Returns 'Hello' to the caller
+      description: Display all available individual, their respective accounts, account type and amounts present in their account
       # used as the method name of the controller
-      operationId: hello
-      parameters:
-        - name: name
-          in: query
-          description: The name of the person to whom to say hello
-          required: false
-          type: string
+      operationId: displayIndividuals
       responses:
         "200":
           description: Success
           schema:
             # a pointer to a definition
-            $ref: "#/definitions/HelloWorldResponse"
+            $ref: "#/definitions/DisplayIndividualsResponse"
         # responses may fall through to errors
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  /displayIndividuals:
+  /displayAccountTypes:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: account
+    get:
+      description: Display Accounts according to their account type and owner details holding those accounts
+      # used as the method name of the controller
+      operationId: displayAccountTypes
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/DisplayAccountTypesResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /updateIndividualAccount:
       # binds a127 app logic to a route
       x-swagger-router-controller: account
       get:
-        description: Display all available individual, their respective accounts, account type and amounts present in their account
+        # For only display porpouse method was kept as GET otherwise in would have been the PUT
+        description: Update individual's account by providing accountID, individualID and amount to be update
         # used as the method name of the controller
-        operationId: displayIndividuals
+        operationId: updateIndividualAccount
         responses:
           "200":
             description: Success
             schema:
               # a pointer to a definition
-              $ref: "#/definitions/DisplayIndividualsResponse"
+              $ref: "#/definitions/UpdateIndividualAccountResponse"
           # responses may fall through to errors
           default:
             description: Error
             schema:
               $ref: "#/definitions/ErrorResponse"
 
-  /displayAccountTypes:
-        # binds a127 app logic to a route
-        x-swagger-router-controller: account
-        get:
-          description: Display all available account according to account type and individuals details related to that account
-          # used as the method name of the controller
-          operationId: displayAccountTypes
-          responses:
-            "200":
-              description: Success
-              schema:
-                # a pointer to a definition
-                $ref: "#/definitions/DisplayAccountTypesResponse"
-            # responses may fall through to errors
-            default:
-              description: Error
-              schema:
-                $ref: "#/definitions/ErrorResponse"
-
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
-  HelloWorldResponse:
-    required:
-      - message
+  DisplayIndividualsResponse:
     properties:
       message:
         type: string
-  DisplayIndividualsResponse:
-      properties:
-        message:
-          type: string
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              first_name:
-                type: string
-              middle_name:
-                type: string
-              last_name:
-                type: string
-              street:
-                type: string
-              city:
-                type: string
-              state:
-                type: string
-              zip:
-                type: string
-              account:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    account_id:
-                      type: string
-                    account_type:
-                      type: string
-                    account_opening_date:
-                      type: string
-                    account_status:
-                      type: string
-                    amount:
-                      type: string
+      data:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            first_name:
+              type: string
+            middle_name:
+              type: string
+            last_name:
+              type: string
+            street:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            zip:
+              type: string
+            account:
+              type: array
+              items:
+                type: object
+                properties:
+                  account_id:
+                    type: string
+                  account_type:
+                    type: string
+                  account_opening_date:
+                    type: string
+                  account_status:
+                    type: string
+                  amount:
+                    type: string
+  DisplayAccountTypesResponse:
+    properties:
+      message:
+        type: string
+      data:
+        type: string
+  UpdateIndividualAccountResponse:
+    properties:
+      message:
+        type: string
+      data:
+        type: string
   ErrorResponse:
     required:
       - message

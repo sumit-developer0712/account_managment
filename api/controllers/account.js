@@ -1,7 +1,10 @@
 'use strict';
 
 var util = require('util');
-var async = require('async')
+var async = require('async');
+/**
+ * XLSX data has been converted in to JSON using JS-XLSX. Conversion codes are not added
+ * */
 var sample_data = {
     "account": [
         {
@@ -203,11 +206,15 @@ var sample_data = {
 
 module.exports = {
     displayIndividuals: displayIndividuals,
-    displayAccountTypes:displayAccountTypes
+    displayAccountTypes:displayAccountTypes,
+    updateIndividualAccount:updateIndividualAccount
 };
 
 function displayIndividuals(req, res){
     var individual_summary = [];
+    /*
+    * Iterate through all Individuals and gather individual details
+    * */
     async.eachSeries(sample_data.individual, function(individualItem,eachIndividualCallback){
         var temp_individual_summary={};
         var accounts_related_to_individual = [];
@@ -219,8 +226,14 @@ function displayIndividuals(req, res){
         temp_individual_summary["city"] = individualItem.indID;
         temp_individual_summary["state"] = individualItem.indID;
         temp_individual_summary["zip"] = individualItem.indID;
+        /*
+         * Use Individual's ID and search all related accounts from AccountOwner
+         * */
         async.eachSeries(sample_data.accountOwner, function(accountOwnerItem,eachAccountOwnerCallback){
             if(accountOwnerItem.indID == individualItem.indID){
+                /*
+                 * Using accountID gather account and amount details from Account
+                 * */
                 async.eachSeries(sample_data.account, function(accountItem,eachAccountCallback){
                     if(accountItem.acctID == accountOwnerItem.acctID){
                         var temp_account={};
@@ -228,6 +241,9 @@ function displayIndividuals(req, res){
                         temp_account["account_opening_date"] = accountItem.openDate;
                         temp_account["account_status"] = accountItem.status;
                         temp_account["amount"] = accountItem.amount;
+                        /*
+                         * find account type from AccountType using accountTypeID
+                         * */
                         async.eachSeries(sample_data.accountType, function (accountTypeItem,eachAccountTypeCallback) {
                             if(accountTypeItem.acctTypeID == accountItem.acctTypeID){
                                 temp_account["account_type"] = accountTypeItem.typeName;
@@ -259,10 +275,19 @@ function displayIndividuals(req, res){
 }
 
 function displayAccountTypes(req, res) {
-    var account_summary = [];
-    async.eachSeries(sample_data.accountType, function(accountTypeItem,eachAccountTypeCallback){
-        var temp_account_summary={};
-    },function(err){
-        res.json({message:"Account List",data:account_summary});
-    });
+    res.json(
+        {
+            message:"Display Accounts according to their account type and owner details holding those accounts",
+            data:"Implementation not provided. Contact the repository owner sumitp.developer@gmail.com"
+        }
+    );
+}
+
+function updateIndividualAccount(req, res) {
+    res.json(
+        {
+            message:"Individual's account updated",
+            data:"Implementation not provided. Contact the repository owner sumitp.developer@gmail.com"
+        }
+    );
 }
