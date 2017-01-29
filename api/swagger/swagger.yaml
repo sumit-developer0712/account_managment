@@ -1,0 +1,139 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Hello World App
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /hello:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: hello_world
+    get:
+      description: Returns 'Hello' to the caller
+      # used as the method name of the controller
+      operationId: hello
+      parameters:
+        - name: name
+          in: query
+          description: The name of the person to whom to say hello
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/HelloWorldResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /displayIndividuals:
+      # binds a127 app logic to a route
+      x-swagger-router-controller: account
+      get:
+        description: Display all available individual, their respective accounts, account type and amounts present in their account
+        # used as the method name of the controller
+        operationId: displayIndividuals
+        responses:
+          "200":
+            description: Success
+            schema:
+              # a pointer to a definition
+              $ref: "#/definitions/DisplayIndividualsResponse"
+          # responses may fall through to errors
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/ErrorResponse"
+
+  /displayAccountTypes:
+        # binds a127 app logic to a route
+        x-swagger-router-controller: account
+        get:
+          description: Display all available account according to account type and individuals details related to that account
+          # used as the method name of the controller
+          operationId: displayAccountTypes
+          responses:
+            "200":
+              description: Success
+              schema:
+                # a pointer to a definition
+                $ref: "#/definitions/DisplayAccountTypesResponse"
+            # responses may fall through to errors
+            default:
+              description: Error
+              schema:
+                $ref: "#/definitions/ErrorResponse"
+
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  HelloWorldResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  DisplayIndividualsResponse:
+      properties:
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              first_name:
+                type: string
+              middle_name:
+                type: string
+              last_name:
+                type: string
+              street:
+                type: string
+              city:
+                type: string
+              state:
+                type: string
+              zip:
+                type: string
+              account:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    account_id:
+                      type: string
+                    account_type:
+                      type: string
+                    account_opening_date:
+                      type: string
+                    account_status:
+                      type: string
+                    amount:
+                      type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
